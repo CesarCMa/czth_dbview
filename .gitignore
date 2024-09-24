@@ -1,2 +1,5 @@
 # Intermediate object files
 /obj/*
+
+# Vscode settings
+/.vscode

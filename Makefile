@@ -6,6 +6,7 @@ run : clean default
 	./$(TARGET)
 	./$(TARGET) -n
 	./$(TARGET) -n -f
+	./$(TARGET) -f employees.db
 	./$(TARGET) -n -f employees.db
 
 default: $(TARGET)

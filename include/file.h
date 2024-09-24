@@ -1,6 +1,7 @@
 #ifndef FILE_H
 #define FILE_H
 
-int load_file(char *filepath, int **filedesc);
+int create_db_file(char *p_filePath);
+int open_db_file(char *p_filePath);
 
 #endif

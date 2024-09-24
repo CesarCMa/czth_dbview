@@ -1,11 +1,20 @@
 # C From Zero to Hero final project
 
-Main goal of this final project is to create a db-like utility in C for the terminal.
+<p align="center">
+  <img src="pics/zero_to_hero.png" alt="Zero to Hero Course">
+</p>
 
-The utility is called `dbview` which, given a file name of employee data via flag `-f` it loads the 
-data from that file into memory, performs security checks on it, and the applies the additional 
-functions based on flags provided:
+This is the implementation of the final project of the course "C from Zero to Hero" from [Low Level Academy](https://lowlevel.academy/), which I really recommend if you are looking to learn some C programming 😉.
 
-- `-a`: Add a new employee to the ddbb.
-- `-d`: Delete and employee from ddbb.
-- `-u`: Update employee data from ddbb.
+The utility is called `dbview` which simulates the functionality of a simple database.
+
+To compile the utility run `make compile` on the terminal.
+
+Parameters of `dbview`:
+
+* `-n`: flag to create a new `.db` file.
+* `-f <filepath>`: Path to `.db` file to read or create.
+* `-a <name,adress,hours>`: Add a new employee to the ddbb, string should be provided bewtween double quotes, e.g. "Timmy, 123 shout street,40".
+* `-l`: flag to list all employees on `.db` file.
+
+You can run an example with the command `make example`.

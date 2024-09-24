@@ -8,10 +8,11 @@
 #include "common.h"
 
 void print_usage(char *argv[]) {
-    printf("Usage: %s -n -f <database file path>\n", argv[0]);
+    printf("Usage: %s -n -f <database file path> -a <name,adress,hours> -l\n", argv[0]);
     printf("\t -n Create new database file\n");
     printf("\t -f <database file path> (required) Path to database file\n");
     printf("\t -a <comma separated string> Add new employee string with format: <name>,<address>,<hours>\n");
+    printf("\t -l List all employees\n");
     return;
 };
 

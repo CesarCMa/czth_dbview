@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-int load_file(char *filepath, int **filedesc) {
+int load_file(char *p_filePath, int **p_dbFileDesc) {
     /**
     * Load and check size of the file. If the file does not exist, create it.
     */
@@ -13,19 +13,19 @@ int load_file(char *filepath, int **filedesc) {
     struct stat dbStat = {0};
 
     /* Get file descriptor for the file*/
-    int fd = open(filepath, O_RDWR | O_CREAT, 0644);
+    int fd = open(p_filePath, O_RDWR | O_CREAT, 0644);
     if (fd == -1) {
         perror("open");
         return -1;
     };
 
-    *filedesc = malloc(sizeof(int));
-    if (*filedesc == NULL) {
+    *p_dbFileDesc = malloc(sizeof(int));
+    if (*p_dbFileDesc == NULL) {
         perror("malloc");
         close(fd);
         return -1;
     }
-    **filedesc = fd;
+    **p_dbFileDesc = fd;
 
     // Load and check size of the file
     if (fstat(fd, &dbStat) < 0) {

@@ -14,20 +14,20 @@ void print_usage(char *argv[]) {
 
 int main(int argc, char *argv[]) {
 
-    char *filepath = NULL;
-    bool newfile = false;
+    char *p_filePath = NULL;
+    bool newFile = false;
     int c;
-    int *filedesc = NULL;
-    long double *filesize = NULL;
+    int *p_dbFileDesc = NULL;
+    long double *p_fileSize = NULL;
 
 
     while ((c = getopt(argc, argv, "nf:")) != -1) { 
         switch (c) {
             case 'n':
-                newfile = true;
+                newFile = true;
                 break;
             case 'f':
-                filepath = optarg;
+                p_filePath = optarg;
                 break;
             case '?':
                 printf("Unknown option -%c\n", c);
@@ -37,22 +37,25 @@ int main(int argc, char *argv[]) {
         }
     }
     
+    if (newFile) {
+        
+    }
 
-    if (filepath == NULL) {
+    if (p_filePath == NULL) {
         printf("Filepath is a required argument \n");
         print_usage(argv);
 
         return 0;
     }
-    printf("Newfile: %d\n", newfile);
-    printf("Filepath: %s\n", filepath);
+    printf("Newfile: %d\n", newFile);
+    printf("p_filePath: %s\n", p_filePath);
 
-    if (load_file(filepath, &filedesc) < 0) {
+    if (load_file(p_filePath, &p_dbFileDesc) < 0) {
         perror("Failed to load file");
         return -1;
     }
 
-    printf("File descriptor: %d\n", *filedesc);
+    printf("File descriptor: %d\n", *p_dbFileDesc);
 
     return 0;
 }

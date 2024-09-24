@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
+#include <string.h>
 
 #include "parse.h"
 #include "common.h"
@@ -78,22 +79,32 @@ int validate_db_header(int fd, struct dbHeader **p_headerOut) {
 }
 
 
-int output_file(int fd, struct dbHeader *p_header) {
+int output_file(int fd, struct dbHeader *p_header, struct employee *p_employees) {
     if (fd < 0) {
         printf("Got invalid file descriptor\n");
         return STATUS_ERROR;
     }
 
+    int count = p_header->count;
+
     /*Convert endianness of the header*/
     p_header->version = htons(p_header->version);
     p_header->count = htons(p_header->count); 
     p_header->magic = htonl(p_header->magic);
-    p_header->fileSize = htonl(p_header->fileSize); 
+    p_header->fileSize = htonl(
+        sizeof(struct dbHeader) + count * sizeof(struct employee)
+    ); 
 
     /* Bring the cursor in the file the begining of the file*/
     lseek(fd, 0, SEEK_SET);
 
     write(fd, p_header, sizeof(struct dbHeader));
+
+    int i = 0;
+    for (; i < count; i++) {
+        p_employees[i].hours = htonl(p_employees[i].hours);
+        write(fd, &p_employees[i], sizeof(struct employee));
+    }
 
     return STATUS_SUCCESS;
 }
@@ -122,9 +133,42 @@ int read_employees(int fd, struct dbHeader *p_header, struct employee **p_employ
     int i = 0;
     for (; i < count; i++) {
         /*Convert endianness of the employees*/
-        p_employees[i].hours = ntohs(p_employees[i].hours);
+        p_employees[i].hours = ntohl(p_employees[i].hours);
     }
 
     *p_employeesOut = p_employees;
     return STATUS_SUCCESS;
+}
+
+
+int add_employee(struct dbHeader *p_header, struct employee *p_employees, char *p_addString) {
+
+    char *p_name = strtok(p_addString, ",");
+    char *p_address = strtok(NULL, ",");
+    char *p_hours = strtok(NULL, ",");
+
+
+    strncpy(
+        p_employees[p_header->count-1].name,
+        p_name,
+        sizeof(p_employees[p_header->count-1].name)
+    );
+    strncpy(
+        p_employees[p_header->count-1].adress,
+        p_address,
+        sizeof(p_employees[p_header->count-1].adress)
+    );
+    p_employees[p_header->count-1].hours = atoi(p_hours);
+    
+    return STATUS_SUCCESS;
+}
+
+
+void list_employees(struct dbHeader *p_header, struct employee *p_employees) {
+    printf("Current employees, in ddbb:\n");
+    int i = 0;
+    for (; i < p_header->count; i++) {
+        printf("%s, %s, %d\n", p_employees[i].name, p_employees[i].adress, p_employees[i].hours);
+    }
+    return;
 }

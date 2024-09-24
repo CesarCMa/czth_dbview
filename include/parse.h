@@ -19,8 +19,10 @@ struct employee {
 
 int create_db_header(struct dbHeader **p_headerOut);
 int validate_db_header(int fd, struct dbHeader **p_headerOut);
-int output_file(int fd, struct dbHeader *p_header);
+int output_file(int fd, struct dbHeader *p_header, struct employee *p_employees);
 int read_employees(int fd, struct dbHeader *p_header, struct employee **p_employeesOut);
+int add_employee(struct dbHeader *p_header, struct employee *p_employees, char *p_addString);
+void list_employees(struct dbHeader *p_header, struct employee *p_employees);
 
 
 #endif

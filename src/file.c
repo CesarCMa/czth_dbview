@@ -11,7 +11,7 @@
 
 int create_db_file(char *p_filePath) {
 
-    int fd = open(p_filePath, O_RDONLY);
+    int fd = open(p_filePath, O_RDWR);
     if (fd != -1) {
         close(fd);
         printf("File already exists. Exiting...\n");

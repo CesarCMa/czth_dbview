@@ -3,6 +3,7 @@
 #include <getopt.h>
 
 #include "file.h"
+#include "parse.h"
 #include "common.h"
 
 void print_usage(char *argv[]) {
@@ -15,11 +16,11 @@ void print_usage(char *argv[]) {
 
 int main(int argc, char *argv[]) {
 
-    char *p_filePath = NULL;
-    bool newFile = false;
     int c;
+    bool newFile = false;
+    char *p_filePath = NULL;
     int dbFileDesc = -1;
-    long double *p_fileSize = NULL;
+    struct dbHeader *p_header = NULL;
 
 
     while ((c = getopt(argc, argv, "nf:")) != -1) { 
@@ -54,16 +55,31 @@ int main(int argc, char *argv[]) {
             printf("Unable to create new db file\n");
             return -1;
         }
+
+        if (create_db_header(dbFileDesc, &p_header) == STATUS_ERROR) {
+            printf("Failed to create db header\n");
+            return -1;
+        }
+
     } else {
         dbFileDesc = open_db_file(p_filePath);
         if (dbFileDesc == STATUS_ERROR) {
             printf("Unable to open db file\n");
             return -1;
         }
+
+        if (validate_db_header(dbFileDesc, &p_header) == STATUS_ERROR) {
+            printf("Failed to validate db header\n");
+            return -1;
+        }
+        printf("Successfully validated db header!\n");
+
     }
 
-
-    printf("File descriptor: %d\n", dbFileDesc);
+    if (output_file(dbFileDesc, p_header) == STATUS_ERROR) {
+        printf("Failed to output file\n");
+        return -1;
+    }
 
     return 0;
 }

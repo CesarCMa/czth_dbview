@@ -11,9 +11,16 @@ struct dbHeader {
     unsigned int fileSize;
 };
 
-int create_db_header(int fd, struct dbHeader **p_headerOut);
+struct employee {
+    char name[256];
+    char adress[256];
+    unsigned int hours;
+};
+
+int create_db_header(struct dbHeader **p_headerOut);
 int validate_db_header(int fd, struct dbHeader **p_headerOut);
 int output_file(int fd, struct dbHeader *p_header);
+int read_employees(int fd, struct dbHeader *p_header, struct employee **p_employeesOut);
 
 
 #endif

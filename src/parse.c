@@ -11,7 +11,7 @@
 
 
 /* I whink file descriptor is not requried here*/
-int create_db_header(int fd, struct dbHeader **p_headerOut) {
+int create_db_header(struct dbHeader **p_headerOut) {
     struct  dbHeader *p_header = calloc(1, sizeof(struct dbHeader));
     if (p_header == NULL) {
         printf("Failed to allocate memory for db header\n");
@@ -95,5 +95,36 @@ int output_file(int fd, struct dbHeader *p_header) {
 
     write(fd, p_header, sizeof(struct dbHeader));
 
+    return STATUS_SUCCESS;
+}
+
+
+int read_employees(int fd, struct dbHeader *p_header, struct employee **p_employeesOut) {
+    if (fd < 0) {
+        printf("Got invalid file descriptor\n");
+        return STATUS_ERROR;
+    }
+
+    int count = p_header->count;
+    struct employee *p_employees = calloc(count, sizeof(struct employee));
+    if (p_employees == NULL) {
+        printf("Failed to allocate memory for employees\n");
+        return STATUS_ERROR;
+    }
+
+    if (read(fd, p_employees, count * sizeof(struct employee)) == -1) {
+        perror("read");
+        free(p_employees);
+        return STATUS_ERROR;
+    }
+
+
+    int i = 0;
+    for (; i < count; i++) {
+        /*Convert endianness of the employees*/
+        p_employees[i].hours = ntohs(p_employees[i].hours);
+    }
+
+    *p_employeesOut = p_employees;
     return STATUS_SUCCESS;
 }

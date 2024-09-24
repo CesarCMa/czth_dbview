@@ -21,6 +21,8 @@ int main(int argc, char *argv[]) {
     char *p_filePath = NULL;
     int dbFileDesc = -1;
     struct dbHeader *p_header = NULL;
+    struct employee *p_employees = NULL;
+    
 
 
     while ((c = getopt(argc, argv, "nf:")) != -1) { 
@@ -56,7 +58,7 @@ int main(int argc, char *argv[]) {
             return -1;
         }
 
-        if (create_db_header(dbFileDesc, &p_header) == STATUS_ERROR) {
+        if (create_db_header(&p_header) == STATUS_ERROR) {
             printf("Failed to create db header\n");
             return -1;
         }
@@ -74,6 +76,11 @@ int main(int argc, char *argv[]) {
         }
         printf("Successfully validated db header!\n");
 
+    }
+
+    if (read_employees(dbFileDesc, p_header, &p_employees) == STATUS_ERROR) {
+        printf("Failed to read employees\n");
+        return -1;
     }
 
     if (output_file(dbFileDesc, p_header) == STATUS_ERROR) {

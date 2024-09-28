@@ -163,7 +163,11 @@ int add_employee(struct dbHeader *p_header, struct employee *p_employees, char *
 }
 
 
-int remove_employee(struct dbHeader **p_header, struct employee **p_employees, char *p_removeString) {
+int remove_employee(
+    struct dbHeader **p_header,
+    struct employee **p_employees,
+    char *p_removeString
+) {
     int i = 0;
     int matchCount = 0;
     int employeeIndex = -1;
@@ -193,6 +197,24 @@ int remove_employee(struct dbHeader **p_header, struct employee **p_employees, c
         return STATUS_ERROR;
     }
     *p_employees = temp;
+
+    return STATUS_SUCCESS;
+}
+
+
+int update_employee(
+    struct dbHeader *p_header,
+    struct employee *p_employees,
+    char *p_updateString
+) {
+    char *p_name = strtok(p_updateString, ",");
+    char *p_hours = strtok(NULL, ",");
+
+    for (int i=0; i < p_header->count; i++){
+        if (strcmp(p_employees[i].name, p_name) == 0) {
+            p_employees[i].hours = atoi(p_hours);
+        }
+    }
 
     return STATUS_SUCCESS;
 }

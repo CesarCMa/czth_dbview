@@ -16,5 +16,7 @@ Parameters of `dbview`:
 * `-f <filepath>`: Path to `.db` file to read or create.
 * `-a <name,adress,hours>`: Add a new employee to the ddbb, string should be provided bewtween double quotes, e.g. "Timmy, 123 shout street,40".
 * `-l`: flag to list all employees on `.db` file.
+* `-r <name>`: Remove employee from ddbb given his/her name.
+* `-u <name,hours>`: Update the hours of the employee on the ddbb based on his/her name.
 
 You can run an example with the command `make example`.

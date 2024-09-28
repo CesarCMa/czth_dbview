@@ -22,7 +22,12 @@ int validate_db_header(int fd, struct dbHeader **p_headerOut);
 int output_file(int fd, struct dbHeader *p_header, struct employee *p_employees);
 int read_employees(int fd, struct dbHeader *p_header, struct employee **p_employeesOut);
 int add_employee(struct dbHeader *p_header, struct employee *p_employees, char *p_addString);
-int remove_employee(struct dbHeader **p_header, struct employee **p_employees, char *p_removeString);
+int remove_employee(
+    struct dbHeader **p_header,
+    struct employee **p_employees,
+    char *p_removeString
+);
+int update_employee(struct dbHeader *p_header, struct employee *p_employees, char *p_updateString);
 void list_employees(struct dbHeader *p_header, struct employee *p_employees);
 
 

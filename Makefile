@@ -8,6 +8,13 @@ example : clean compile
 	./$(TARGET) -f ./employees.db -a "Timmy,12234 Second St,50"
 	./$(TARGET) -f ./employees.db -l -a
 
+test-update : clean compile
+	./$(TARGET) -f ./employees.db -n
+	./$(TARGET) -f ./employees.db -a "John Doe,123 Main St,40"
+	./$(TARGET) -f ./employees.db -l
+	./$(TARGET) -f ./employees.db -u "John Doe,60"
+	./$(TARGET) -f ./employees.db -l
+
 test-remove : clean compile
 	./$(TARGET) -f ./employees.db -n
 	./$(TARGET) -f ./employees.db -a "John Doe,123 Main St,40"

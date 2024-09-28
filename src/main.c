@@ -13,6 +13,8 @@ void print_usage(char *argv[]) {
     printf("\t -f <database file path> (required) Path to database file\n");
     printf("\t -a <comma separated string> Add new employee string with format: <name>,<address>,<hours>\n");
     printf("\t -l List all employees\n");
+    printf("\t -t <name> Given the name of an employee, remove her/him from ddbb\n");
+    printf("\t -u <comma separated string> Update hours for employee, given his/her name: <name>,<hours>\n");
     return;
 };
 
@@ -25,13 +27,14 @@ int main(int argc, char *argv[]) {
     char *p_filePath = NULL;
     char *p_addString = NULL;
     char *p_removeString = NULL;	
+    char *p_updateString = NULL;	
     int dbFileDesc = -1;
     struct dbHeader *p_header = NULL;
     struct employee *p_employees = NULL;
     
 
 
-    while ((c = getopt(argc, argv, "nf:a:lr:")) != -1) { 
+    while ((c = getopt(argc, argv, "nf:a:lr:u:")) != -1) { 
         switch (c) {
             case 'n':
                 newFile = true;
@@ -47,6 +50,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'r':
                 p_removeString = optarg;
+                break;
+            case 'u':
+                p_updateString = optarg;
                 break;
             case '?':
                 printf("Unknown option -%c\n", c);
@@ -109,15 +115,23 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if (listEmployees) {
-        list_employees(p_header, p_employees);
+    if (p_updateString) {
+        printf("Updating employee: %s\n", p_updateString);
+        if (update_employee(p_header, p_employees, p_updateString) == STATUS_ERROR) {
+            printf("Failed to update employee\n");
+            return -1;
+        }
     }
 
     if (p_removeString) {
-        if (remove_employee(&p_header, &p_employees, p_removeString) == STATUS_ERROR) {
+        if (remove_employee(&p_header, &p_employees, p_updateString) == STATUS_ERROR) {
             printf("Failed to remove employee\n");
             return -1;
         }
+    }
+
+    if (listEmployees) {
+        list_employees(p_header, p_employees);
     }
 
     if (output_file(dbFileDesc, p_header, p_employees) == STATUS_ERROR) {

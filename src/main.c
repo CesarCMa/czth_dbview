@@ -24,13 +24,14 @@ int main(int argc, char *argv[]) {
     bool listEmployees = false;
     char *p_filePath = NULL;
     char *p_addString = NULL;
+    char *p_removeString = NULL;	
     int dbFileDesc = -1;
     struct dbHeader *p_header = NULL;
     struct employee *p_employees = NULL;
     
 
 
-    while ((c = getopt(argc, argv, "nf:a:l")) != -1) { 
+    while ((c = getopt(argc, argv, "nf:a:lr:")) != -1) { 
         switch (c) {
             case 'n':
                 newFile = true;
@@ -43,6 +44,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'l':
                 listEmployees = true;
+                break;
+            case 'r':
+                p_removeString = optarg;
                 break;
             case '?':
                 printf("Unknown option -%c\n", c);
@@ -83,8 +87,6 @@ int main(int argc, char *argv[]) {
             printf("Failed to validate db header\n");
             return -1;
         }
-        printf("Successfully validated db header!\n");
-
     }
 
     if (read_employees(dbFileDesc, p_header, &p_employees) == STATUS_ERROR) {
@@ -109,6 +111,13 @@ int main(int argc, char *argv[]) {
 
     if (listEmployees) {
         list_employees(p_header, p_employees);
+    }
+
+    if (p_removeString) {
+        if (remove_employee(&p_header, &p_employees, p_removeString) == STATUS_ERROR) {
+            printf("Failed to remove employee\n");
+            return -1;
+        }
     }
 
     if (output_file(dbFileDesc, p_header, p_employees) == STATUS_ERROR) {

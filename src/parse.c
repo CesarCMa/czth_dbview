@@ -86,18 +86,17 @@ int output_file(int fd, struct dbHeader *p_header, struct employee *p_employees)
     }
 
     int count = p_header->count;
+    int fileSize = sizeof(struct dbHeader) + count * sizeof(struct employee);
 
     /*Convert endianness of the header*/
     p_header->version = htons(p_header->version);
     p_header->count = htons(p_header->count); 
     p_header->magic = htonl(p_header->magic);
-    p_header->fileSize = htonl(
-        sizeof(struct dbHeader) + count * sizeof(struct employee)
-    ); 
-
+    p_header->fileSize = htonl(fileSize); 
+    
+    ftruncate(fd, fileSize);
     /* Bring the cursor in the file the begining of the file*/
     lseek(fd, 0, SEEK_SET);
-
     write(fd, p_header, sizeof(struct dbHeader));
 
     int i = 0;
@@ -160,6 +159,33 @@ int add_employee(struct dbHeader *p_header, struct employee *p_employees, char *
     );
     p_employees[p_header->count-1].hours = atoi(p_hours);
     
+    return STATUS_SUCCESS;
+}
+
+
+int remove_employee(struct dbHeader **p_header, struct employee **p_employees, char *p_removeString) {
+    int i = 0;
+    int employeeIndex = -1;
+
+    for (; i < (*p_header)->count; i++) {
+        if (strcmp((*p_employees)[i].name, p_removeString) == 0) {
+            employeeIndex = i;
+            break;
+        }
+    }
+
+    if (employeeIndex != -1) {
+        for (i = employeeIndex; i < (*p_header)->count - 1; i++) {
+            (*p_employees)[i] = (*p_employees)[i+1];
+        }
+        (*p_header)->count = (*p_header)->count - 1;
+        struct employee *temp = realloc(*p_employees, (*p_header)->count * sizeof(struct employee));
+        if (temp == NULL) {
+            printf("Failed to reallocate memory for employees\n");
+            return STATUS_ERROR;
+        }
+        *p_employees = temp;
+    }
     return STATUS_SUCCESS;
 }
 

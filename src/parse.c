@@ -165,27 +165,35 @@ int add_employee(struct dbHeader *p_header, struct employee *p_employees, char *
 
 int remove_employee(struct dbHeader **p_header, struct employee **p_employees, char *p_removeString) {
     int i = 0;
+    int matchCount = 0;
     int employeeIndex = -1;
 
     for (; i < (*p_header)->count; i++) {
         if (strcmp((*p_employees)[i].name, p_removeString) == 0) {
-            employeeIndex = i;
-            break;
+            matchCount++;
         }
     }
 
-    if (employeeIndex != -1) {
-        for (i = employeeIndex; i < (*p_header)->count - 1; i++) {
-            (*p_employees)[i] = (*p_employees)[i+1];
+    for (int j=0; j<matchCount; j++) {
+        for (i=0; i < (*p_header)->count; i++) {
+            if (strcmp((*p_employees)[i].name, p_removeString) == 0) {
+                for (int k = i; k < (*p_header)->count - 1; k++) {
+                    (*p_employees)[k] = (*p_employees)[k+1];
+                }
+                break;
+            }
         }
-        (*p_header)->count = (*p_header)->count - 1;
-        struct employee *temp = realloc(*p_employees, (*p_header)->count * sizeof(struct employee));
-        if (temp == NULL) {
-            printf("Failed to reallocate memory for employees\n");
-            return STATUS_ERROR;
-        }
-        *p_employees = temp;
     }
+    (*p_header)->count = (*p_header)->count - matchCount;
+
+
+    struct employee *temp = realloc(*p_employees, (*p_header)->count * sizeof(struct employee));
+    if (temp == NULL) {
+        printf("Failed to reallocate memory for employees\n");
+        return STATUS_ERROR;
+    }
+    *p_employees = temp;
+
     return STATUS_SUCCESS;
 }
 
